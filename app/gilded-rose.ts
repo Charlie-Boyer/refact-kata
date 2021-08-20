@@ -22,28 +22,27 @@ export class GildedRose {
       let pRate: number;
 
       const isPerempting = (currItem, rate) => {
+        if (currItem.sellIn < 0) rate *= 2;
+        if (currItem.name.includes('Conjured')) rate *= 2;
+
         const newQuality = Math.max(0, Math.min(50, currItem.quality + rate));
-        
-        // Conjured element is perempting twice as fast
-        if (currItem.name.includes('Conjured')) {
-          rate = rate * 2;
-        }
+
         return newQuality;
       };
 
+      //Decrease sellin property for all item
+      item.sellIn--;
+
       switch (item.name) {
+        case 'Sulfuras, Hand of Ragnaros':
+          break;
         case 'Aged Brie':
           pRate = 1;
           item.quality = isPerempting(item, pRate);
-          item.sellIn--;
-          break;
-        case 'Sulfuras, Hand of Ragnaros':
-          item.sellIn--;
           break;
         case 'Backstage passes to a TAFKAL80ETC concert':
           if (item.sellIn <= 0) {
             item.quality = 0;
-            item.sellIn--;
             break;
           }
           if (item.sellIn <= 5) {
@@ -54,12 +53,10 @@ export class GildedRose {
             pRate = 1;
           }
           item.quality = isPerempting(item, pRate);
-          item.sellIn--;
           break;
         default:
           pRate = -1;
           item.quality = isPerempting(item, pRate);
-          item.sellIn--;
           break;
       }
     });
